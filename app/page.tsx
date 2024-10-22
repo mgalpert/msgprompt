@@ -1,101 +1,177 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
+import { ExternalLink, Bot, Copy, ChevronDown, ChevronUp } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+
+export default function MsgPrompt() {
+  const [inputText, setInputText] = useState('')
+  const [enhancedPromptText, setEnhancedPromptText] = useState(
+    "provide the exact prompt I should share with an advanced LLM like yourself to get the most thorough response."
+  )
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
+
+  const getEnhancedPrompt = (text: string, platform: string) => {
+    return `here's what i want: ${text} ${enhancedPromptText} Then share a ready-to-use clickable link (not in a code block) using this exact format: ${platform === 'Claude' ? 'https://claude.ai/remix#q=your_suggested_prompt_here' : 'https://chatgpt.com/?q=your_suggested_prompt_here'}`
+  }
+
+  const getClaudeUrl = (text: string) => {
+    if (!text.trim()) return ''
+    const enhancedPrompt = getEnhancedPrompt(text, 'Claude')
+    const encodedText = encodeURIComponent(enhancedPrompt)
+    return `https://claude.ai/remix#q=${encodedText}`
+  }
+
+  const getChatGPTUrl = (text: string) => {
+    if (!text.trim()) return ''
+    const enhancedPrompt = getEnhancedPrompt(text, 'ChatGPT')
+    const encodedText = encodeURIComponent(enhancedPrompt)
+    return `https://chatgpt.com/?q=${encodedText}`
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-black mb-2">MSG PROMPT</h1>
+          <p className="text-xl text-gray-600">we pre prompt your LLMs so you don't have to</p>
+        </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+        <Card className="w-full mb-8">
+          <CardHeader>
+            <CardTitle>I want...</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Textarea 
+              placeholder="Enter your prompt here..."
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              className="min-h-[120px] w-full mb-4"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          </CardContent>
+        </Card>
+
+        {inputText.trim() && (
+          <div className="flex justify-between mb-4">
+            {[
+              { name: 'Claude', getUrl: getClaudeUrl, color: 'purple' },
+              { name: 'ChatGPT', getUrl: getChatGPTUrl, color: 'green' }
+            ].map((platform) => (
+              <Button
+                key={platform.name}
+                className={`flex items-center bg-${platform.color}-500 hover:bg-${platform.color}-600 text-white`}
+                onClick={() => window.open(platform.getUrl(inputText), '_blank')}
+              >
+                Open in {platform.name} <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            ))}
+          </div>
+        )}
+
+        {inputText.trim() && (
+          <div className="mb-8">
+            <Button
+              onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+              variant="outline"
+              className="w-full flex justify-between items-center"
+              aria-expanded={isAdvancedOpen}
+              aria-controls="advanced-area"
+            >
+              <span>Don't click here unless you want to see how the sausage is made</span>
+              {isAdvancedOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
+          </div>
+        )}
+
+        {inputText.trim() && isAdvancedOpen && (
+          <div id="advanced-area">
+            <Card className="w-full mb-8">
+              <CardHeader>
+                <CardTitle>Enhanced Prompt Text</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Textarea 
+                  value={enhancedPromptText}
+                  onChange={(e) => setEnhancedPromptText(e.target.value)}
+                  className="min-h-[80px] w-full mb-4"
+                />
+              </CardContent>
+            </Card>
+
+            {inputText.trim() && (
+              <div className="grid md:grid-cols-2 gap-8">
+                {[
+                  { name: 'Claude', getUrl: getClaudeUrl, color: 'purple' },
+                  { name: 'ChatGPT', getUrl: getChatGPTUrl, color: 'green' }
+                ].map((platform) => (
+                  <Card key={platform.name} className={`border-t-4 border-${platform.color}-500`}>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Bot className={`mr-2 text-${platform.color}-500`} />
+                        {platform.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500 mb-2">Enhanced Prompt:</h3>
+                        <div className="text-sm break-words bg-gray-100 p-3 rounded border">
+                          {getEnhancedPrompt(inputText, platform.name)}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500 mb-2">Click to open in {platform.name}:</h3>
+                        <a 
+                          href={platform.getUrl(inputText)}
+                          className={`text-sm text-${platform.color}-500 hover:text-${platform.color}-600 hover:underline break-all flex items-center gap-2`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {platform.getUrl(inputText)}
+                          <ExternalLink className="h-4 w-4 inline-block flex-shrink-0" />
+                        </a>
+                      </div>
+                    </CardContent>
+                    <div className="flex justify-end items-center pt-4">
+                      <Button
+                        variant="outline"
+                        className="flex items-center"
+                        onClick={() => navigator.clipboard.writeText(platform.getUrl(inputText))}
+                      >
+                        <Copy className="mr-2 h-4 w-4" /> Copy URL
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        <footer className="mt-8 text-center text-sm text-gray-600">
+          <p>
+            <a 
+              href="http://x.com/msg" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-purple-600 hover:underline"
+            >
+              Follow @msg on X
+            </a>
+          </p>
+          <p className="mt-2">
+            <a 
+              href="https://github.com/mgalpert/msgprompt/issues" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-purple-600 hover:underline"
+            >
+              Suggest changes or improvements
+            </a>
+          </p>
+        </footer>
+      </div>
     </div>
-  );
+  )
 }
