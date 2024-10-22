@@ -36,16 +36,16 @@ export default function MsgPrompt() {
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-black mb-2">MSG PROMPT</h1>
-          <p className="text-xl text-gray-600">we pre prompt your LLMs so you don't have to</p>
+          <p className="text-xl text-gray-600">We pre prompt your LLMs, so you don't have to.</p>
         </header>
 
         <Card className="w-full mb-8">
           <CardHeader>
-            <CardTitle>I want...</CardTitle>
+            <CardTitle>I want</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea 
-              placeholder="Enter your prompt here..."
+              placeholder="Enter your prompt here to experience the magic..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               className="min-h-[120px] w-full mb-4"
