@@ -14,7 +14,12 @@ export default function MsgPrompt() {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
 
   const getEnhancedPrompt = (text: string, platform: string) => {
-    return `here's what i want: ${text} ${enhancedPromptText} Then share a ready-to-use clickable link (not in a code block) using this exact format: ${platform === 'Claude' ? 'https://claude.ai/remix#q=your_suggested_prompt_here' : 'https://chatgpt.com/?q=your_suggested_prompt_here'}`
+    const basePrompt = `here's what i want: ${text} ${enhancedPromptText}`
+    if (platform === 'Claude') {
+      return `${basePrompt} Then provide the URL-encoded version of your suggested prompt using the same structure as this URL: https://claude.ai/remix#q=your_encoded_prompt_here`
+    } else {
+      return `${basePrompt} Then share a ready-to-use clickable link (not in a code block) using this exact format: https://chatgpt.com/?q=your_suggested_prompt_here`
+    }
   }
 
   const getClaudeUrl = (text: string) => {
@@ -32,7 +37,7 @@ export default function MsgPrompt() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#eeece2] to-[#e0ded4] p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-black mb-2">MSG PROMPT</h1>
@@ -56,12 +61,12 @@ export default function MsgPrompt() {
         {inputText.trim() && (
           <div className="flex justify-between mb-4">
             {[
-              { name: 'Claude', getUrl: getClaudeUrl, color: 'purple' },
+              { name: 'Claude', getUrl: getClaudeUrl, color: 'orange' },
               { name: 'ChatGPT', getUrl: getChatGPTUrl, color: 'green' }
             ].map((platform) => (
               <Button
                 key={platform.name}
-                className={`flex items-center bg-${platform.color}-500 hover:bg-${platform.color}-600 text-white`}
+                className={`flex items-center ${platform.name === 'Claude' ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-500 hover:bg-green-600'} text-white`}
                 onClick={() => window.open(platform.getUrl(inputText), '_blank')}
               >
                 Open in {platform.name} <ExternalLink className="ml-2 h-4 w-4" />
@@ -79,7 +84,7 @@ export default function MsgPrompt() {
               aria-expanded={isAdvancedOpen}
               aria-controls="advanced-area"
             >
-              <span>Don't click here unless you want to see how the sausage is made</span>
+              <span>Don't click here unless you want to see how the prompt is prompted</span>
               {isAdvancedOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </Button>
           </div>
@@ -103,13 +108,13 @@ export default function MsgPrompt() {
             {inputText.trim() && (
               <div className="grid md:grid-cols-2 gap-8">
                 {[
-                  { name: 'Claude', getUrl: getClaudeUrl, color: 'purple' },
+                  { name: 'Claude', getUrl: getClaudeUrl, color: 'orange' },
                   { name: 'ChatGPT', getUrl: getChatGPTUrl, color: 'green' }
                 ].map((platform) => (
-                  <Card key={platform.name} className={`border-t-4 border-${platform.color}-500`}>
+                  <Card key={platform.name} className={`border-t-4 ${platform.name === 'Claude' ? 'border-orange-500' : 'border-green-500'}`}>
                     <CardHeader>
                       <CardTitle className="flex items-center">
-                        <Bot className={`mr-2 text-${platform.color}-500`} />
+                        <Bot className={`mr-2 ${platform.name === 'Claude' ? 'text-orange-500' : 'text-green-500'}`} />
                         {platform.name}
                       </CardTitle>
                     </CardHeader>
@@ -125,7 +130,7 @@ export default function MsgPrompt() {
                         <h3 className="text-sm font-medium text-gray-500 mb-2">Click to open in {platform.name}:</h3>
                         <a 
                           href={platform.getUrl(inputText)}
-                          className={`text-sm text-${platform.color}-500 hover:text-${platform.color}-600 hover:underline break-all flex items-center gap-2`}
+                          className={`text-sm ${platform.name === 'Claude' ? 'text-orange-500 hover:text-orange-600' : 'text-green-500 hover:text-green-600'} hover:underline break-all flex items-center gap-2`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -155,7 +160,7 @@ export default function MsgPrompt() {
               href="http://x.com/msg" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-purple-600 hover:underline"
+              className="text-claude hover:underline"
             >
               Follow @msg on X
             </a>
@@ -165,7 +170,7 @@ export default function MsgPrompt() {
               href="https://github.com/mgalpert/msgprompt/issues" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-purple-600 hover:underline"
+              className="text-claude hover:underline"
             >
               Suggest changes or improvements
             </a>
